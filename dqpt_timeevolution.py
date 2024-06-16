@@ -1,6 +1,7 @@
 import qiskit
 from qiskit.circuit.library import RXGate, RZZGate
 from qiskit_aer.primitives import Estimator
+from qiskit_aer import AerSimulator
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
 from exact_diagonalization import magn_exact_diagonalization
@@ -46,6 +47,17 @@ def calculate_magnatization(dt, t, N, g):
     result = Estimator().run(circuit, observable).result().values[0]
     return result
 
+def time_evolution(dt, t, N, g):
+    timesteps = int(t / dt)
+    backend = AerSimulator(method='statevector')
+    circuit = qiskit.QuantumCircuit(N)
+    for _ in range(timesteps):
+        #evolve_basic(circuit, g, dt)
+        evolve_symmetric(circuit, g, dt)
+    circuit.save_statevector()
+    state = backend.run(circuit).result().get_statevector()
+    return state
+
 
 def magnetization_operator(dim):
     magnetization_list = []
@@ -58,6 +70,9 @@ def magnetization_operator(dim):
 
     magnetization = SparsePauliOp.from_list(magnetization_list)
     return magnetization
+
+
+
 
 
 
