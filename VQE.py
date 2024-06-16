@@ -55,7 +55,7 @@ if __name__ == "__main__":
     hamiltonian = -(Z ^ X) - (X ^ Z)
     results = grid_search(hamiltonian, values)
     # make a heatmap of the results and save the figure
-    plt.imshow(results, origin='lower')
+    plt.imshow(results, origin='lower', extent=(0, np.pi, 0, np.pi))
     plt.title("Energy value for the parametrized circuit")
     plt.colorbar()
     plt.xlabel("a")
@@ -77,13 +77,13 @@ if __name__ == "__main__":
 
     noise_model = NoiseModel()
     # excited state population is p and param_amp is gamma
-    error_single = amplitude_damping_error(excited_state_population=0.2, param_amp=0.01)
-    error_double = amplitude_damping_error(excited_state_population=0.2, param_amp=0.01).tensor(amplitude_damping_error(excited_state_population=0.2, param_amp=0.01))
+    error_single = amplitude_damping_error(excited_state_population=0.2, param_amp=0.1)
+    error_double = amplitude_damping_error(excited_state_population=0.2, param_amp=0.1).tensor(amplitude_damping_error(excited_state_population=0.2, param_amp=0.01))
 
     noise_model.add_all_qubit_quantum_error(error=error_single, instructions=["rz"])
     noise_model.add_all_qubit_quantum_error(error=error_double, instructions=["rzz"])
     results_noise = grid_search(hamiltonian, values, noise_model=noise_model)
-    plt.imshow(results_noise, origin='lower')
+    plt.imshow(results_noise, origin='lower', extent=(0, np.pi, 0, np.pi))
     plt.title("Energy value for the parametrized circuit with noise model")
     plt.colorbar()
     plt.xlabel("a")
