@@ -37,29 +37,38 @@ def evolve_symmetric(circ: qiskit.QuantumCircuit, g: float, dt: float):
 
 
 def calculate_magnatization(dt, t, N, g):
+    """
+    This function makes the time evolution and returns the magnetization
+    """
     timesteps = int(t / dt)
     circuit = qiskit.QuantumCircuit(N)
     for _ in range(timesteps):
-        #evolve_basic(circuit, g, dt)
+        # evolve_basic(circuit, g, dt)
         evolve_symmetric(circuit, g, dt)
-    observable = magnetization_operator(N)
-
+    observable = _magnetization_operator(N)
     result = Estimator().run(circuit, observable).result().values[0]
     return result
 
 def time_evolution(dt, t, N, g):
+    """
+    This function makes the time evolution and returns the state vector
+    """
     timesteps = int(t / dt)
     backend = AerSimulator(method='statevector')
     circuit = qiskit.QuantumCircuit(N)
     for _ in range(timesteps):
-        #evolve_basic(circuit, g, dt)
+        # evolve_basic(circuit, g, dt)
         evolve_symmetric(circuit, g, dt)
     circuit.save_statevector()
     state = backend.run(circuit).result().get_statevector()
     return state
 
 
-def magnetization_operator(dim):
+def _magnetization_operator(dim) -> SparsePauliOp:
+    """
+    Returns the operator for the magnetization.
+    dim is the number of qubits
+    """
     magnetization_list = []
     string_list = ["I" for _ in range(dim)]
     for i in range(dim):
@@ -67,7 +76,6 @@ def magnetization_operator(dim):
         string = "".join(string_list)
         magnetization_list.append((string, 1/dim))
         string_list[i] = "I"
-
     magnetization = SparsePauliOp.from_list(magnetization_list)
     return magnetization
 
