@@ -20,7 +20,7 @@ def sp(alpha, n, N):
 def magn_exact_diagonalization(N, g, t, Npoints):
     """
     Benchmark the Trotterized circuit evolution with the exact Hamiltonian time evolution,
-    obtained through exact diagonalization (only for small system sizes N!). 
+    obtained through exact diagonalization (only for small system sizes N!).
     This function returns the magnetization for equally spaced timesteps between  0  and  t .
     """
     # array containing the magnetization of individual basis states
